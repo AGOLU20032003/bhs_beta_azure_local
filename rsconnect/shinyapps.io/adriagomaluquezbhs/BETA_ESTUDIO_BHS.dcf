@@ -1,0 +1,12 @@
+name: BETA_ESTUDIO_BHS
+title: BETA_ESTUDIO_BHS
+username: adriagomaluquezbhs
+account: adriagomaluquezbhs
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 13076560
+bundleId: 9249141
+url: https://adriagomaluquezbhs.shinyapps.io/BETA_ESTUDIO_BHS/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE

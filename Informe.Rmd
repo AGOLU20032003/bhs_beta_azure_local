@@ -1,0 +1,786 @@
+---
+title: "BOGage planner: Informe"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    # theme: flatly
+    theme: paper
+    highlight: monochrome
+    toc: true
+    toc_float: true
+    runtime: shiny
+---
+
+<!-- Evitar que se imprima el table of contents si se guarda como pdf -->
+<style>
+  /* Oculta el TOC al imprimir */
+  @media print {
+    .toc, .tocify { 
+      display: none; 
+    }
+  }
+</style>
+
+
+<!-- <style> -->
+<!--   header { -->
+<!--     position: fixed; -->
+<!--     top: 0; -->
+<!--     width: 100%; -->
+<!--     background-color: #f8f9fa; -->
+<!--     padding: 10px; -->
+<!--     display: flex; -->
+<!--     align-items: center; -->
+<!--     font-size: 20px; -->
+<!--     font-weight: bold; -->
+<!--   } -->
+<!--   header img { -->
+<!--     height: 40px; /* Ajusta el tamaño de la imagen según lo necesites */ -->
+<!--     margin-right: 10px; -->
+<!--   } -->
+<!--   body { -->
+<!--     margin-top: 70px; /* Ajusta para evitar que el contenido se superponga */ -->
+<!--   } -->
+<!-- </style> -->
+
+<!-- <header> -->
+<!--   <img src="www/BOGagePlannerv2.svg" alt="Logo"> -->
+<!--   <span>BOGage planner: Informe - `r Sys.Date()`</span> -->
+<!-- </header> -->
+
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+  # Generar gráficos
+  generated_plots <- lapply(seq_along(plots), function(i) {
+    create_plot(
+      data = plots[[i]]$data,
+      x_var = "hour",
+      y_var = plots[[i]]$y_var,
+      y_label = "Equipajes",
+      hline_value = plots[[i]]$hline_value
+    )
+  })
+})
+
+suppressWarnings({
+  generated_operators_plots <- lapply(seq_along(plots_ops), function(i) {
+      create_plot_ops(
+        data = plots_ops[[i]]$data,
+        x_var = "hour",
+        y_var = plots_ops[[i]]$y_var,
+        y_label = "Operadores"
+      )
+    })
+})
+```
+
+## Entrada de Equipajes al Sistema
+
+### Tabla de Máxima Demanda
+
+En esta tabla se mostrará la máxima demanda total y por línea de las diferentes áreas de facturación y líneas de transferencias.
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(knitr)
+library(kableExtra)
+
+kable(table_bag_entry, align = rep("c", ncol(table_bag_entry)), caption = "Tabla de Entradas de Equipajes") %>%
+kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),full_width = FALSE)
+
+```
+
+
+### Resultados Gráficos
+
+A continuación, se muestran las gráficas de demanda total y por línea de entrada de equipajes al sistema.
+
+#### Entrada total de equipajes
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[1]])
+
+})
+```
+
+#### Línea TR07
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[2]])
+
+})
+```
+
+#### Línea TR08
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[3]])
+
+})
+```
+
+
+#### Línea TR09
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[4]])
+
+})
+```
+
+
+#### Línea TR10
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[5]])
+
+})
+```
+
+#### Línea TR04
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[6]])
+
+})
+```
+
+#### Línea TR03
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[7]])
+
+})
+```
+
+#### Línea TR02
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[8]])
+
+})
+```
+
+#### Línea TR01
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[9]])
+
+})
+```
+
+#### Línea TX01
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[10]])
+
+})
+```
+
+#### Línea TX02
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[11]])
+
+})
+```
+
+#### Línea TX03
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[12]])
+
+})
+```
+
+#### Línea TX04
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[13]])
+
+})
+```
+
+<div style="height: 1cm;"></div>
+
+## Sorter
+
+### Tabla de Máxima Demanda
+
+En esta tabla se mostrará la máxima demanda en cada uno de los sorters.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(knitr)
+library(kableExtra)
+
+# Mostrar la tabla en el documento
+# kable(table_bag_entry, caption = "Tabla de Entradas de Equipajes")
+
+kable(table_sorter, align = rep("c", ncol(table_sorter)), caption = "Tabla de Sorter") %>%
+kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),full_width = FALSE)
+
+```
+
+### Resultados Gráficos
+
+A continuación, se muestran las gráficas de demanda en los sorters.
+
+#### Sorter MS01
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[28]])
+
+})
+```
+
+#### Sorter MS02
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[29]])
+
+})
+```
+
+<div style="height: 1cm;"></div>
+
+## Líneas EDS
+
+### Tabla de Máxima Demanda
+
+En esta tabla se mostrará la máxima demanda total y por línea de las líneas de EDS.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(knitr)
+library(kableExtra)
+
+# Mostrar la tabla en el documento
+# kable(table_bag_entry, caption = "Tabla de Entradas de Equipajes")
+
+kable(table_eds, align = rep("c", ncol(table_eds)), caption = "Tabla de Líneas EDS") %>%
+kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),full_width = FALSE)
+
+```
+
+### Resultados Gráficos
+
+A continuación, se muestran las gráficas de demanda total y por línea en las líneas de EDS. Adicionalmente, se incluye la gráfica de necesidad de operadores de nivel 2.
+
+#### Demanda Total
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[20]])
+
+})
+```
+
+#### Operadores de Nivel 2 necesarios
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_operators_plots[[2]])
+
+})
+```
+
+#### Línea 1L1
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[21]])
+
+})
+```
+
+#### Línea 1L2
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[22]])
+
+})
+```
+
+#### Línea 1L3
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[23]])
+
+})
+```
+
+#### Línea 1L4
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[24]])
+
+})
+```
+
+#### Línea 1L5
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[25]])
+
+})
+```
+
+#### Línea 1L6
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[26]])
+
+})
+```
+
+#### Línea 1L7
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[27]])
+
+})
+```
+
+<div style="height: 1cm;"></div>
+
+## Nivel 3
+
+### Tabla de Máxima Demanda
+
+En esta tabla se mostrará la máxima demanda y el máximo número de operadores necesarios en nivel 3.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(knitr)
+library(kableExtra)
+
+# Mostrar la tabla en el documento
+# kable(table_bag_entry, caption = "Tabla de Nivel 3")
+
+kable(table_L3, align = rep("c", ncol(table_L3)), caption = "Tabla de Nivel 3") %>%
+kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),full_width = FALSE)
+
+```
+
+### Resultados Gráficos
+
+A continuación, se muestran las gráficas de demanda y de número de operadores necesarios en nivel 3.
+
+#### Demanda de equipajes
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[19]])
+
+})
+```
+
+#### Operadores de Nivel 3 necesarios
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_operators_plots[[1]])
+
+})
+```
+
+<div style="height: 1cm;"></div>
+
+## Estación de Codificación Manual
+
+### Tabla de Máxima Demanda
+
+En esta tabla se mostrará la máxima demanda por estación de codificación manual.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(knitr)
+library(kableExtra)
+
+# Mostrar la tabla en el documento
+# kable(table_bag_entry, caption = "Tabla de Entradas de Equipajes")
+
+kable(table_mes[2:5,], align = rep("c", ncol(table_mes[2:5,])), caption = "Tabla de Estación de Codificación Manual (MES)") %>%
+kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),full_width = FALSE)
+
+```
+
+### Resultados Gráficos
+
+A continuación, se muestran las gráficas de demanda en cada estación de codificación manual.
+
+#### Estación ME1
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[15]])
+
+})
+```
+
+#### Estación ME2
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[16]])
+
+})
+```
+
+#### Estación ME3
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[17]])
+
+})
+```
+
+#### Estación ME4
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[18]])
+
+})
+```
+
+<div style="height: 1cm;"></div>
+
+## Carruseles de make-up
+
+### Tabla de Máxima Demanda
+
+En esta tabla se mostrará la máxima demanda por línea de acceso a cada carrusel de make-up. Cabe aclarar que el MC04 es considerado como EBS manual y no se incluye en este apartado.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(knitr)
+library(kableExtra)
+
+# Mostrar la tabla en el documento
+# kable(table_bag_entry, caption = "Tabla de Entradas de Equipajes")
+
+table_mu <- rbind(table_make_up[2:7,], table_make_up[10:23,])
+
+kable(table_mu, align = rep("c", ncol(table_mu)), caption = "Tabla de Carruseles de Make-up") %>%
+kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),full_width = FALSE)
+
+```
+
+### Resultados Gráficos
+
+A continuación, se muestran las gráficas de demanda en cada una de las líneas de acceso a los carruseles de make-up.
+
+#### Carrusel MC01
+
+##### Línea MU01-1xx
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[30]])
+
+})
+```
+
+##### Línea MU01-2xx
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[31]])
+
+})
+```
+
+#### Carrusel MC02
+
+##### Línea MU02-1xx
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[32]])
+
+})
+```
+
+##### Línea MU02-2xx
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[33]])
+
+})
+```
+
+#### Carrusel MC03
+
+##### Línea MU03-1xx
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[34]])
+
+})
+```
+
+##### Línea MU03-2xx
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[35]])
+
+})
+```
+
+#### Carrusel MC05
+
+##### Línea MU05-1xx
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[36]])
+
+})
+```
+
+##### Línea MU05-2xx
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[37]])
+
+})
+```
+
+#### Carrusel MC06
+
+##### Línea MU06-1xx
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[38]])
+
+})
+```
+
+##### Línea MU06-2xx
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[39]])
+
+})
+```
+
+#### Carrusel MC07
+
+##### Línea MU07-1xx
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[40]])
+
+})
+```
+
+##### Línea MU07-2xx
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[41]])
+
+})
+```
+
+#### Carrusel MC08
+
+##### Línea MU08-1xx
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[42]])
+
+})
+```
+
+##### Línea MU08-2xx
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[43]])
+
+})
+```
+
+#### Carrusel MC09
+
+##### Línea MU09-1xx
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[44]])
+
+})
+```
+
+##### Línea MU09-2xx
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[45]])
+
+})
+```
+
+#### Carrusel MC10
+
+##### Línea MU10-1xx
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[46]])
+
+})
+```
+
+##### Línea MU10-2xx
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[47]])
+
+})
+```
+
+#### Carrusel MC11
+
+##### Línea MU11-1xx
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[48]])
+
+})
+```
+
+##### Línea MU11-2xx
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[49]])
+
+})
+```
+
+<div style="height: 1cm;"></div>
+
+## Early Baggage Storage
+
+### Tabla de Máxima Demanda
+
+En esta tabla se mostrará la máxima demanda en el EBS manual y en el EBS automático.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(knitr)
+library(kableExtra)
+
+# Mostrar la tabla en el documento
+# kable(table_bag_entry, caption = "Tabla de Entradas de Equipajes")
+
+kable(table_ebs, align = rep("c", ncol(table_ebs)), caption = "Tabla de Early Baggage Storage (EBS)") %>%
+kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),full_width = FALSE)
+
+```
+
+### Resultados Gráficos
+
+A continuación, se muestran las gráficas de demanda en los EBS automático y manual.
+
+#### EBS Automático
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[50]])
+
+})
+```
+
+#### EBS Manual
+
+```{r, fig.height=3, echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings({
+
+ print(generated_plots[[51]])
+
+})
+```
