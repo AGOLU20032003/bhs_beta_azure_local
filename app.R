@@ -2915,35 +2915,7 @@ value_box(
   })#Fin del observe
   
   #### 3.7. Observe para Capturas de Pantalla ####
-  #Inicio de observe events referentes a hacer capturas de pantalla en los resultados
-  
-  observeEvent(input$screenshot_EBS, {
-    screenshot()  # Captura toda la pantalla visible de la app
-  })
-  
-  observeEvent(input$screenshot_bag_entry, {
-    screenshot()  # Captura toda la pantalla visible de la app
-  })
-  
-  observeEvent(input$screenshot_EDS, {
-    screenshot()  # Captura toda la pantalla visible de la app
-  })
-  
-  observeEvent(input$screenshot_NIVEL3, {
-    screenshot()  # Captura toda la pantalla visible de la app
-  })
-  
-  observeEvent(input$screenshot_SORTER, {
-    screenshot()  # Captura toda la pantalla visible de la app
-  })
-  
-  observeEvent(input$screenshot_MES, {
-    screenshot()  # Captura toda la pantalla visible de la app
-  })
-  
-  observeEvent(input$screenshot_MAKEUP, {
-    screenshot()  # Captura toda la pantalla visible de la app
-  })
+
   
   
   output$download_html <- downloadHandler(
