@@ -9,6 +9,6 @@ WORKDIR /app
 
 RUN R -e "renv::restore()"
 
-EXPOSE 3838
+EXPOSE 3839
 
 CMD ["R", "-e", "shiny::runApp('./app.R', host='0.0.0.0', port=3838)"]
