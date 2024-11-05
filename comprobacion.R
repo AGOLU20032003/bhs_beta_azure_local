@@ -15,7 +15,7 @@ library(readxl)
 
 #### 0. PREPARACIÓN ####
 ddfs <- as.data.table(ddfs)
-ddfs_airline <- unique(ddfs$Airline)
+ddfs_airline <- unique(ddfs$AEROLINEA)
 checkin_airline <- unique(checkin_area$Airline)
 makeup_airline <- unique(make_up_carousel$Airline)
 

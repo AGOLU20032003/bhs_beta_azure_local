@@ -1,6 +1,6 @@
 ---
-title: "BOGage planner: Informe"
-date: "`r Sys.Date()`"
+title: "`r paste('BOGage planner: Informe del día ', ddfs_complete$Date[1])`"
+date: "Realizado el `r Sys.Date()`"
 output: 
   html_document:
     # theme: flatly
@@ -76,9 +76,98 @@ suppressWarnings({
 })
 ```
 
-## Entrada de Equipajes al Sistema
+# 1. Resumen de Parámetros de Entrada
+En este apartado se mostrará el resumen de los parámetros de entrada introducidos.
 
-### Tabla de Máxima Demanda
+## 1.1 Parámetros de Pasajeros
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(knitr)
+library(kableExtra)
+
+
+table_par_pas <- as.data.table(list(
+  Parámetro = c("Pasajeros O/D", 
+                  "Load Factor", 
+                  "Equipajes/pasajero (doméstico)", 
+                  "Equipajes/pasajero (internacional)",
+                  "Equipajes/pasajero (transferencias)"),
+  Valor = c(paste0(OD_pax*100, " %"), paste0(LF*100," %"), paste0(bag_pax_DOM," equipajes/pax"), paste0(bag_pax_INT," equipajes/pax"), paste0(bag_pax_Transf," equipajes/pax"))
+))
+
+
+kable(table_par_pas, align = rep("c", ncol(table_par_pas)), caption = "Tabla de Parámetros de Pasajeros") %>%
+kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),full_width = FALSE)
+
+```
+
+## 1.2 Parámetros de los Equipos de Inspección
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(knitr)
+library(kableExtra)
+
+
+table_eq_insp <- as.data.table(list(
+  Parámetro = c("Equipajes aprobados en nivel 1", 
+                  "Equipajes aprobados en nivel 2", 
+                  "Equipajes rechazados en nivel 1", 
+                  "Equipajes No Pic"),
+  Valor = c(paste0(eds_limit, " %"), paste0(apr_n2," %"), paste0(rec_n2," %"), paste0(no_pic," %"))
+))
+
+
+kable(table_eq_insp, align = rep("c", ncol(table_eq_insp)), caption = "Tabla de Parámetros de los Equipos de Inspección") %>%
+kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),full_width = FALSE)
+
+```
+
+## 1.3 Parámetros de los Operadores de N2 y N3
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(knitr)
+library(kableExtra)
+
+
+table_par_oper <- as.data.table(list(
+  Parámetro = c("Capacidad de un operador de nivel 2", 
+                  "Capacidad de un operador de nivel 3"),
+  Valor = c(paste0(capacidad_N2, " equipajes/hora"), paste0(capacidad_N3," equipajes/hora"))
+))
+
+
+kable(table_par_oper, align = rep("c", ncol(table_par_oper)), caption = "Tabla de Parámetros de Operadores") %>%
+kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),full_width = FALSE)
+
+```
+
+## 1.4 Parámetros Operativos
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(knitr)
+library(kableExtra)
+
+
+table_par_op <- as.data.table(list(
+  Parámetro = c("Recirculación de equipajes en el sorter", 
+                  "Equipajes no leídos por ATR", 
+                  "Equipajes lost-tracking previo a EDS", 
+                  "Equipajes lost-tracking tras EDS"),
+  Valor = c(paste0(recirc, " %"), paste0(mes_val," %"), paste0(eds_lost," %"), paste0(lost_track_value," %"))
+)) 
+
+
+kable(table_par_op, align = rep("c", ncol(table_par_op)), caption = "Tabla de Parámetros Operativos") %>%
+kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),full_width = FALSE)
+
+```
+
+
+# 2. Resultados
+
+## 2.1 Entrada de Equipajes al Sistema
+
+### 2.1.1 Tabla de Máxima Demanda
 
 En esta tabla se mostrará la máxima demanda total y por línea de las diferentes áreas de facturación y líneas de transferencias.
 
@@ -93,7 +182,7 @@ kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive
 ```
 
 
-### Resultados Gráficos
+### 2.1.2 Resultados Gráficos
 
 A continuación, se muestran las gráficas de demanda total y por línea de entrada de equipajes al sistema.
 
@@ -231,9 +320,9 @@ suppressWarnings({
 
 <div style="height: 1cm;"></div>
 
-## Sorter
+## 2.2 Sorter
 
-### Tabla de Máxima Demanda
+### 2.2.1 Tabla de Máxima Demanda
 
 En esta tabla se mostrará la máxima demanda en cada uno de los sorters.
 
@@ -249,7 +338,7 @@ kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive
 
 ```
 
-### Resultados Gráficos
+### 2.2.2 Resultados Gráficos
 
 A continuación, se muestran las gráficas de demanda en los sorters.
 
@@ -275,9 +364,9 @@ suppressWarnings({
 
 <div style="height: 1cm;"></div>
 
-## Líneas EDS
+## 2.3 Líneas EDS
 
-### Tabla de Máxima Demanda
+### 2.3.1 Tabla de Máxima Demanda
 
 En esta tabla se mostrará la máxima demanda total y por línea de las líneas de EDS.
 
@@ -293,7 +382,7 @@ kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive
 
 ```
 
-### Resultados Gráficos
+### 2.3.2 Resultados Gráficos
 
 A continuación, se muestran las gráficas de demanda total y por línea en las líneas de EDS. Adicionalmente, se incluye la gráfica de necesidad de operadores de nivel 2.
 
@@ -389,9 +478,9 @@ suppressWarnings({
 
 <div style="height: 1cm;"></div>
 
-## Nivel 3
+## 2.4 Nivel 3
 
-### Tabla de Máxima Demanda
+### 2.4.1 Tabla de Máxima Demanda
 
 En esta tabla se mostrará la máxima demanda y el máximo número de operadores necesarios en nivel 3.
 
@@ -407,7 +496,7 @@ kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive
 
 ```
 
-### Resultados Gráficos
+### 2.4.2 Resultados Gráficos
 
 A continuación, se muestran las gráficas de demanda y de número de operadores necesarios en nivel 3.
 
@@ -433,9 +522,9 @@ suppressWarnings({
 
 <div style="height: 1cm;"></div>
 
-## Estación de Codificación Manual
+## 2.5 Estación de Codificación Manual
 
-### Tabla de Máxima Demanda
+### 2.5.1 Tabla de Máxima Demanda
 
 En esta tabla se mostrará la máxima demanda por estación de codificación manual.
 
@@ -451,7 +540,7 @@ kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive
 
 ```
 
-### Resultados Gráficos
+### 2.5.2 Resultados Gráficos
 
 A continuación, se muestran las gráficas de demanda en cada estación de codificación manual.
 
@@ -497,9 +586,9 @@ suppressWarnings({
 
 <div style="height: 1cm;"></div>
 
-## Carruseles de make-up
+## 2.6 Carruseles de make-up
 
-### Tabla de Máxima Demanda
+### 2.6.1 Tabla de Máxima Demanda
 
 En esta tabla se mostrará la máxima demanda por línea de acceso a cada carrusel de make-up. Cabe aclarar que el MC04 es considerado como EBS manual y no se incluye en este apartado.
 
@@ -517,7 +606,7 @@ kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive
 
 ```
 
-### Resultados Gráficos
+### 2.6.2 Resultados Gráficos
 
 A continuación, se muestran las gráficas de demanda en cada una de las líneas de acceso a los carruseles de make-up.
 
@@ -743,9 +832,9 @@ suppressWarnings({
 
 <div style="height: 1cm;"></div>
 
-## Early Baggage Storage
+## 2.7 Early Baggage Storage
 
-### Tabla de Máxima Demanda
+### 2.7.1 Tabla de Máxima Demanda
 
 En esta tabla se mostrará la máxima demanda en el EBS manual y en el EBS automático.
 
@@ -761,7 +850,7 @@ kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive
 
 ```
 
-### Resultados Gráficos
+### 2.7.2 Resultados Gráficos
 
 A continuación, se muestran las gráficas de demanda en los EBS automático y manual.
 

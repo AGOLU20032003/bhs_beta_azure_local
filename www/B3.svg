@@ -2,13 +2,13 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="4.3525453mm"
-   height="3.5474229mm"
-   viewBox="0 0 4.3525453 3.5474229"
+   width="4.1475616mm"
+   height="3.7258792mm"
+   viewBox="0 0 4.1475617 3.7258793"
    version="1.1"
    id="svg1"
    inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
-   sodipodi:docname="A1.svg"
+   sodipodi:docname="B2.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -23,9 +23,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="5.5874298"
-     inkscape:cx="29.351599"
-     inkscape:cy="7.8748192"
+     inkscape:zoom="15.803638"
+     inkscape:cx="12.781867"
+     inkscape:cy="1.2022548"
      inkscape:window-width="1920"
      inkscape:window-height="991"
      inkscape:window-x="2391"
@@ -33,22 +33,34 @@
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1" />
   <defs
-     id="defs1" />
+     id="defs1">
+    <rect
+       x="22.33663"
+       y="19.362631"
+       width="36.826962"
+       height="24.488031"
+       id="rect1" />
+  </defs>
   <g
      inkscape:label="Capa 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-57.488902,-133.04117)">
+     transform="translate(-61.780803,-138.24361)">
     <text
        xml:space="preserve"
        style="font-size:4.9389px;line-height:1.3;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic';text-align:justify;letter-spacing:-0.79375px;fill:#373a3c;fill-opacity:0.9;stroke:#ffffff;stroke-width:0.687999;stroke-dasharray:0.7, 0.7"
-       x="57.370735"
-       y="136.58859"
-       id="text1"><tspan
+       x="61.339485"
+       y="141.88026"
+       id="text1-7"><tspan
          sodipodi:role="line"
-         id="tspan1"
+         id="tspan1-7"
          style="letter-spacing:-0.79375px;fill:#ffffff;fill-opacity:0.9;stroke:none;stroke-width:0.688"
-         x="57.370735"
-         y="136.58859">A1</tspan></text>
+         x="61.339485"
+         y="141.88026">B3</tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,61.780803,138.33284)"
+       id="text1"
+       style="font-size:18.6667px;line-height:1.3;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic';text-align:justify;letter-spacing:-3px;white-space:pre;shape-inside:url(#rect1);display:inline;fill:#4d4d4d;fill-opacity:0.9;stroke:none;stroke-width:2.60031;stroke-dasharray:2.64567, 2.64567" />
   </g>
 </svg>

@@ -181,14 +181,25 @@ tx_akes_distribution <- function(akes_transf, TX){
 #Preparación de datos
 ddfs <- as.data.table(ddfs)
 
-setnames(ddfs, c("Departure Airline (IATA)", "Dep Flight Number", "Departure PAX", "STD"), c("Airline", "FlightNo", "Seats (Total)", "Departure"))
+setnames(ddfs, c("AEROLINEA", "Numero vuelo", "Proyeccion PAX  Saliendo", "Código IATA"), c("Airline", "FlightNo", "Seats (Total)","Destination"))
 ddfs <- as.data.table(ddfs)
-ddfs[, DOM_INT := `Departure Type`]
+
+ddfs[, FlightNo := paste0(Airline,"-",FlightNo)]
+
+ddfs[, `Seats (Total)` := round(`Seats (Total)`, digits = 0)]
+
+ddfs[, DOM_INT := `Tipo Vuelo Generico`]
 ddfs[DOM_INT == "I", DOM_INT := "INT"]
 ddfs[DOM_INT == "D", DOM_INT := "DOM"]
 
+ddfs[, Hora_AMPM := ifelse(grepl("p", substr(Hora, nchar(Hora) - 4, nchar(Hora))), 
+                           sub(".{5}$", "PM", Hora), 
+                           sub(".{5}$", "AM", Hora))]
+
+ddfs[, Departure := as.ITime(strptime(Hora_AMPM, format = "%I:%M:%S %p"))]
+
+
 ddfs$`Departure Time` <- as.ITime(format(ddfs$Departure, "%H:%M:%S"))
-ddfs$Date <- as.IDate(ddfs$Departure)
 ddfs[, Departure:=NULL]
 setnames(ddfs,"Departure Time","Departure")
 ddfs$`Departure Time` <- as.ITime(floor(as.numeric(as.ITime(ddfs$`Departure`))/(5*60))*(5*60)) # We round up the Departure Time to the previous 5 minutes interval
@@ -202,14 +213,14 @@ make_up_capacity <- data.table(
 
 # Carousel times value
 
-DOM_cierre_AV <- as.numeric(carousel_times[Airline == "AV" & Type == "DOM"]$`Close Time`)
-DOM_duracion_AV <- as.numeric(carousel_times[Airline == "AV" & Type == "DOM"]$`Duration`)
-INT_cierre_AV <- as.numeric(carousel_times[Airline == "AV" & Type == "INT"]$`Close Time`)
-INT_duracion_AV <- as.numeric(carousel_times[Airline == "AV" & Type == "INT"]$`Duration`)
-DOM_cierre_LA <- as.numeric(carousel_times[Airline == "LA" & Type == "DOM"]$`Close Time`)
-DOM_duracion_LA <- as.numeric(carousel_times[Airline == "LA" & Type == "DOM"]$`Duration`)
-INT_cierre_LA <- as.numeric(carousel_times[Airline == "LA" & Type == "INT"]$`Close Time`)
-INT_duracion_LA <- as.numeric(carousel_times[Airline == "LA" & Type == "INT"]$`Duration`)
+DOM_cierre_AV <- as.numeric(carousel_times[Airline == "Avianca" & Type == "DOM"]$`Close Time`)
+DOM_duracion_AV <- as.numeric(carousel_times[Airline == "Avianca" & Type == "DOM"]$`Duration`)
+INT_cierre_AV <- as.numeric(carousel_times[Airline == "Avianca" & Type == "INT"]$`Close Time`)
+INT_duracion_AV <- as.numeric(carousel_times[Airline == "Avianca" & Type == "INT"]$`Duration`)
+DOM_cierre_LA <- as.numeric(carousel_times[Airline == "Latam" & Type == "DOM"]$`Close Time`)
+DOM_duracion_LA <- as.numeric(carousel_times[Airline == "Latam" & Type == "DOM"]$`Duration`)
+INT_cierre_LA <- as.numeric(carousel_times[Airline == "Latam" & Type == "INT"]$`Close Time`)
+INT_duracion_LA <- as.numeric(carousel_times[Airline == "Latam" & Type == "INT"]$`Duration`)
 DOM_cierre_rest <- as.numeric(carousel_times[Airline == "Others" & Type == "DOM"]$`Close Time`)
 DOM_duracion_rest <- as.numeric(carousel_times[Airline == "Others" & Type == "DOM"]$`Duration`)
 INT_cierre_rest <- as.numeric(carousel_times[Airline == "Others" & Type == "INT"]$`Close Time`)
@@ -259,40 +270,40 @@ ddfs2[, N_dollies := ceiling((Bag_OD + Bag_transf)/cap_dollies)]
 
 # Carousel Times AVIANCA
 
-ddfs2[(Airline == "AV") & DOM_INT == "DOM", Car_close := `Departure Time` - as.ITime(DOM_cierre_AV*60)]
-ddfs2[(Airline == "AV") & DOM_INT == "DOM", Car_open := Car_close - as.ITime(DOM_duracion_AV*60)]
-ddfs2[(Airline == "AV") & DOM_INT == "DOM", Car_close_aux := Car_close + as.ITime(12*3600) + as.ITime(12*3600)]
-ddfs2[(Airline == "AV") & DOM_INT == "DOM", Car_open_aux := Car_open + as.ITime(12*3600) + as.ITime(12*3600)]
+ddfs2[(Airline == "Avianca") & DOM_INT == "DOM", Car_close := `Departure Time` - as.ITime(DOM_cierre_AV*60)]
+ddfs2[(Airline == "Avianca") & DOM_INT == "DOM", Car_open := Car_close - as.ITime(DOM_duracion_AV*60)]
+ddfs2[(Airline == "Avianca") & DOM_INT == "DOM", Car_close_aux := Car_close + as.ITime(12*3600) + as.ITime(12*3600)]
+ddfs2[(Airline == "Avianca") & DOM_INT == "DOM", Car_open_aux := Car_open + as.ITime(12*3600) + as.ITime(12*3600)]
 
-ddfs2[(Airline == "AV" & Airline != "LA") & DOM_INT == "INT", Car_close := `Departure Time` - as.ITime(INT_cierre_AV*60)]
-ddfs2[(Airline == "AV" & Airline != "LA") & DOM_INT == "INT", Car_open := Car_close - as.ITime(INT_duracion_AV*60)]
-ddfs2[(Airline == "AV" & Airline != "LA") & DOM_INT == "INT", Car_close_aux := Car_close + as.ITime(12*3600) + as.ITime(12*3600 )]
-ddfs2[(Airline == "AV" & Airline != "LA") & DOM_INT == "INT", Car_open_aux := Car_open + as.ITime(12*3600) + as.ITime(12*3600)]
+ddfs2[(Airline == "Avianca" & Airline != "Latam") & DOM_INT == "INT", Car_close := `Departure Time` - as.ITime(INT_cierre_AV*60)]
+ddfs2[(Airline == "Avianca" & Airline != "Latam") & DOM_INT == "INT", Car_open := Car_close - as.ITime(INT_duracion_AV*60)]
+ddfs2[(Airline == "Avianca" & Airline != "Latam") & DOM_INT == "INT", Car_close_aux := Car_close + as.ITime(12*3600) + as.ITime(12*3600 )]
+ddfs2[(Airline == "Avianca" & Airline != "Latam") & DOM_INT == "INT", Car_open_aux := Car_open + as.ITime(12*3600) + as.ITime(12*3600)]
 
 # Carousel Times LA
 
-ddfs2[(Airline == "LA") & DOM_INT == "DOM", Car_close := `Departure Time` - as.ITime(DOM_cierre_LA*60)]
-ddfs2[(Airline == "LA") & DOM_INT == "DOM", Car_open := Car_close - as.ITime(DOM_duracion_LA*60)]
-ddfs2[(Airline == "LA") & DOM_INT == "DOM", Car_close_aux := Car_close + as.ITime(12*3600) + as.ITime(12*3600)]
-ddfs2[(Airline == "LA") & DOM_INT == "DOM", Car_open_aux := Car_open + as.ITime(12*3600) + as.ITime(12*3600)]
+ddfs2[(Airline == "Latam") & DOM_INT == "DOM", Car_close := `Departure Time` - as.ITime(DOM_cierre_LA*60)]
+ddfs2[(Airline == "Latam") & DOM_INT == "DOM", Car_open := Car_close - as.ITime(DOM_duracion_LA*60)]
+ddfs2[(Airline == "Latam") & DOM_INT == "DOM", Car_close_aux := Car_close + as.ITime(12*3600) + as.ITime(12*3600)]
+ddfs2[(Airline == "Latam") & DOM_INT == "DOM", Car_open_aux := Car_open + as.ITime(12*3600) + as.ITime(12*3600)]
 
-ddfs2[(Airline == "LA") & DOM_INT == "INT", Car_close := `Departure Time` - as.ITime(INT_cierre_LA*60)]
-ddfs2[(Airline == "LA") & DOM_INT == "INT", Car_open := Car_close - as.ITime(INT_duracion_LA*60)]
-ddfs2[(Airline == "LA") & DOM_INT == "INT", Car_close_aux := Car_close + as.ITime(12*3600) + as.ITime(12*3600 )]
-ddfs2[(Airline == "LA") & DOM_INT == "INT", Car_open_aux := Car_open + as.ITime(12*3600) + as.ITime(12*3600)]
+ddfs2[(Airline == "Latam") & DOM_INT == "INT", Car_close := `Departure Time` - as.ITime(INT_cierre_LA*60)]
+ddfs2[(Airline == "Latam") & DOM_INT == "INT", Car_open := Car_close - as.ITime(INT_duracion_LA*60)]
+ddfs2[(Airline == "Latam") & DOM_INT == "INT", Car_close_aux := Car_close + as.ITime(12*3600) + as.ITime(12*3600 )]
+ddfs2[(Airline == "Latam") & DOM_INT == "INT", Car_open_aux := Car_open + as.ITime(12*3600) + as.ITime(12*3600)]
 
 
 # Carousel Times Rest
 
-ddfs2[(Airline != "AV" & Airline != "LA") & DOM_INT == "DOM", Car_close := `Departure Time` - as.ITime(DOM_cierre_rest*60)]
-ddfs2[(Airline != "AV" & Airline != "LA") & DOM_INT == "DOM", Car_open := Car_close - as.ITime(DOM_duracion_rest*60)]
-ddfs2[(Airline != "AV" & Airline != "LA") & DOM_INT == "DOM", Car_close_aux := Car_close + as.ITime(12*3600) + as.ITime(12*3600)]
-ddfs2[(Airline != "AV" & Airline != "LA") & DOM_INT == "DOM", Car_open_aux := Car_open + as.ITime(12*3600) + as.ITime(12*3600)]
+ddfs2[(Airline != "Avianca" & Airline != "Latam") & DOM_INT == "DOM", Car_close := `Departure Time` - as.ITime(DOM_cierre_rest*60)]
+ddfs2[(Airline != "Avianca" & Airline != "Latam") & DOM_INT == "DOM", Car_open := Car_close - as.ITime(DOM_duracion_rest*60)]
+ddfs2[(Airline != "Avianca" & Airline != "Latam") & DOM_INT == "DOM", Car_close_aux := Car_close + as.ITime(12*3600) + as.ITime(12*3600)]
+ddfs2[(Airline != "Avianca" & Airline != "Latam") & DOM_INT == "DOM", Car_open_aux := Car_open + as.ITime(12*3600) + as.ITime(12*3600)]
 
-ddfs2[(Airline != "AV" & Airline != "LA") & DOM_INT == "INT", Car_close := `Departure Time` - as.ITime(INT_cierre_rest*60)]
-ddfs2[(Airline != "AV" & Airline != "LA") & DOM_INT == "INT", Car_open := Car_close - as.ITime(INT_duracion_rest*60)]
-ddfs2[(Airline != "AV" & Airline != "LA") & DOM_INT == "INT", Car_close_aux := Car_close + as.ITime(12*3600) + as.ITime(12*3600 )]
-ddfs2[(Airline != "AV" & Airline != "LA") & DOM_INT == "INT", Car_open_aux := Car_open + as.ITime(12*3600) + as.ITime(12*3600)]
+ddfs2[(Airline != "Avianca" & Airline != "Latam") & DOM_INT == "INT", Car_close := `Departure Time` - as.ITime(INT_cierre_rest*60)]
+ddfs2[(Airline != "Avianca" & Airline != "Latam") & DOM_INT == "INT", Car_open := Car_close - as.ITime(INT_duracion_rest*60)]
+ddfs2[(Airline != "Avianca" & Airline != "Latam") & DOM_INT == "INT", Car_close_aux := Car_close + as.ITime(12*3600) + as.ITime(12*3600 )]
+ddfs2[(Airline != "Avianca" & Airline != "Latam") & DOM_INT == "INT", Car_open_aux := Car_open + as.ITime(12*3600) + as.ITime(12*3600)]
 
 
 #Ordenamos por orden de salida

@@ -1,3 +1,7 @@
+#Mensajes de depuracion para la imagen de docker
+#options(shiny.trace = TRUE)
+#options(shiny.sanitize.errors = TRUE)
+
 #Cargar los paquetes necesarios
 library(shiny)
 library(shinydashboard)
@@ -125,7 +129,7 @@ ui <- navbarPage(
          }
          
          .disclaimer-background {
-              background-image: url("El-dorado-from-air.png");
+              background-image: url("Background.png");
               background-size: cover;
               background-position: center;
               background-repeat: no-repeat;
@@ -208,7 +212,7 @@ ui <- navbarPage(
                            
                            div(style = "height:15px"),
                            layout_columns(
-                             fluidRow(class = "flex-item", sliderInput("valor13", "Capacidad de un operador de nivel 2 (equipajes/hora):", value = 120, min = 1.0, max = 750, step = 1, width = "100%")),
+                             fluidRow(class = "flex-item", sliderInput("valor13", "Capacidad de un operador de nivel 2 (equipajes/hora):", value = 120, min = 1.0, max = 600, step = 1, width = "100%")),
                              fluidRow(class = "flex-item", sliderInput("valor14", "Capacidad de un operador de nivel 3 (equipajes/hora):", value = 24, min = 1.0, max = 100, step = 1, width = "100%")),
                              
                              col_widths = c(6,6)
@@ -546,21 +550,30 @@ ui <- navbarPage(
                #src = "aeropuerto-el-dorado.png",
                #shinydashboard = FALSE
                #),
-               
+              
                layout_columns(
                  
                  fluidRow(),
                  
-                 fluidRow(div(style = "margin-right: 0px; margin-left: 0px; justify-content: center; text-align: justify; background-color: #f0f0f0; padding: 20px; border-radius: 20px;",
-                              box(title = "Disclaimer",
-                                  status = "primary",
+                 
+                 fluidRow(div(style = "margin-right: 0px; margin-left: 0px; justify-content: center; text-align: justify; background-color: rgba(50, 50, 50, 0.9); padding: 20px; border-radius: 20px; color: white;",
+                              box(status = "primary",
                                   solidHeader = TRUE,
                                   width = NULL,
+                                  div(style = "display: flex; justify-content: center; align-items: center;",
+                                      tags$img(src = "LogosDisclaimer.svg", height = "200px", width = "800px", style = "vertical-align: middle; margin-right: 10px;")
+                                  )  
+                              ),
+                              tags$br(),
+                              tags$br(),
+                              
                                   p("La aplicación", strong("BOGage Planner"), ", desarrollada por ", strong("LATAM LOGISTICS"), "para
                     el", strong("cálculo estático del Sistema de Manejo de Equipajes (BHS) del Aeropuerto Internacional
                     El Dorado de Bogotá"), ", ha sido creada exclusivamente para uso de", strong("OPAIN S.A."), "concesionario y operador del aeropuerto.
                     Esta aplicación tiene como objetivo facilitar la simulación y cálculo de cargas estáticas del sistema BHS, con base en datos
-                    y parámetros específicos proporcionados por OPAIN y otras entidades autorizadas."),
+                    y parámetros específicos proporcionados por OPAIN y otras entidades autorizadas. Para asistencia técnica, dudas o problemas con la aplicación, por favor contacte a", 
+                                    strong("LATAM LOGISTICS"), " en el correo ", tags$a(href="mailto:BOGagePlanner-helpdesk@latamlogistics.es", "BOGagePlanner-helpdesk@latamlogistics.es"), 
+                                    ". Estaremos encantados de ayudarle en caso de cualquier inconveniente."),
                                   h6("Alcance y Limitaciones"),
                                   tags$ul(
                                     tags$li("La aplicación está diseñada para uso técnico e interno y no debe
@@ -579,19 +592,12 @@ ui <- navbarPage(
                   esta aplicación en el contexto del proyecto del BHS en el Aeropuerto Internacional El Dorado. Cualquier uso no autorizado o su distribución
                   fuera de este alcance estará sujeto a acciones legales. Para cualquier duda o aclaración adicional
                   sobre el uso o alcance de la aplicación, por favor contacte a ", strong("LATAM LOGISTICS"), " directamente."),
-                                  tags$br(),
-                                  tags$br(),
-                                  div(style = "display: flex; justify-content: center; align-items: center;",
-                                      tags$img(src = "LOGOELDORADO.svg", height = "100px", width = "400px", style = "vertical-align: middle; margin-right: 10px;"),
-                                      tags$img(src = "LATAMLOGISTICSLOGO2.svg", height = "220px", width = "220px", style = "vertical-align: middle; margin-left: 10px;"),
-                                      tags$img(src = "OPAINLOGO2.svg", height = "100px", width = "440px", style = "vertical-align: middle; margin-left: 10px;")
-                                  )  
-                              ),
+                                  
                  )),
                  
                  fluidRow(),
                  
-                 col_widths = c(1,10,1)
+                 col_widths = c(2,8,2)
                  
                ),
            )
@@ -656,12 +662,12 @@ server <- function(input, output) {
   output$value_box1 <- renderUI({
 value_box(
       title = "UN TOTAL DE",
-      value = paste(length(data$archivo1_mostrar$STD), "vuelos"),
+      value = paste(length(data$archivo1_mostrar$Hora), "vuelos"),
       tags$p(paste(
-        "A", length(unique(data$archivo1_mostrar$Destination)), "destinos distintos"
+        "A", length(unique(data$archivo1_mostrar$`Código IATA`)), "destinos distintos"
       )),
       tags$p(paste(
-        "Con", length(unique(data$archivo1_mostrar$`Departure Airline (IATA)`)), "aerolíneas distintas"
+        "Con", length(unique(data$archivo1_mostrar$AEROLINEA)), "aerolíneas distintas"
       )),
       showcase = bsicons::bs_icon("airplane"), # Ensure the bsicons library is loaded
       theme = value_box_theme(bg = "#373a3cff", fg = "#fafafa"),   
@@ -674,9 +680,9 @@ value_box(
     output$value_box2 <- renderUI({
     value_box(
       title = "UN TOTAL DE",
-      value = paste(sum(data$archivo1_mostrar$`Departure PAX`), "asientos"),
+      value = paste(sum(data$archivo1_mostrar$`Proyeccion PAX  Saliendo`), "asientos"),
       tags$p(paste(
-        "Media de", round(mean(data$archivo1_mostrar$`Departure PAX`), digits = 1), "asientos por aeronave"
+        "Media de", round(mean(data$archivo1_mostrar$`Proyeccion PAX  Saliendo`), digits = 1), "asientos por aeronave"
       )),
       showcase = bsicons::bs_icon("person"), # Ensure the bsicons library is loaded)
       theme = value_box_theme(bg = "#373a3cff", fg = "#fafafa"),   
@@ -706,7 +712,7 @@ value_box(
     output$value_box4 <- renderUI({
       
       copy_ci_dist <- copy(as.data.table(data$ci_dist)[CI_Area == "A1"])
-      copy_ci_dist <- copy_ci_dist[Airline %in% unique(data$archivo1$`Departure Airline (IATA)`),]
+      copy_ci_dist <- copy_ci_dist[Airline %in% unique(data$archivo1$`AEROLINEA`),]
       copy_ci_dist[DOM_INT == "DOM", Airline := paste0(Airline," - Doméstico")]
       copy_ci_dist[DOM_INT == "INT", Airline := paste0(Airline," - Internacional")]
       
@@ -715,10 +721,11 @@ value_box(
       if(length(unique_values)==0){value <- paste("No hay aerolíneas", " asignadas")}
       
       value_box(
-        title = tags$div("Área A1", style = "font-size: 20px; font-weight: bold; margin-top: 10px;"),
+        # title = tags$div("Área A1", style = "font-size: 20px; font-weight: bold; margin-top: 10px;"),
+        title = NULL,
         value = HTML(paste0('<div style="font-size: 18px; height: 150px; overflow-y: auto;">', value, '</div>')),
-        # showcase = tags$img(src = "www/A1.svg", width = "40px", height = "40px"), 
-        showcase = bsicons::bs_icon("suitcase"), # Ensure the bsicons library is loaded)
+        showcase = tags$img(src = "A1.svg", width = "40px", height = "40px"), 
+        # showcase = bsicons::bs_icon("suitcase"), # Ensure the bsicons library is loaded)
         theme = value_box_theme(bg = "#373a3cff", fg = "#fafafa"),   
         height = 200,
         style = "border-radius: 8px; overflow-y: auto;",
@@ -728,7 +735,7 @@ value_box(
     output$value_box5 <- renderUI({
 
       copy_ci_dist <- copy(as.data.table(data$ci_dist)[CI_Area == "B1"])
-      copy_ci_dist <- copy_ci_dist[Airline %in% unique(data$archivo1$`Departure Airline (IATA)`),]
+      copy_ci_dist <- copy_ci_dist[Airline %in% unique(data$archivo1$`AEROLINEA`),]
       copy_ci_dist[DOM_INT == "DOM", Airline := paste0(Airline," - Doméstico")]
       copy_ci_dist[DOM_INT == "INT", Airline := paste0(Airline," - Internacional")]
 
@@ -737,9 +744,11 @@ value_box(
       if(length(unique_values)==0){value <- paste("No hay aerolíneas", " asignadas")}
 
       value_box(
-        title = tags$div("Área B1", style = "font-size: 20px; font-weight: bold;margin-top: 10px;"),
+        # title = tags$div("Área B1", style = "font-size: 20px; font-weight: bold;margin-top: 10px;"),
+        title = NULL,
         value = HTML(paste0('<div style="font-size: 18px; height: 150px; overflow-y: auto;">', value, '</div>')),
-        showcase = bsicons::bs_icon("suitcase"), # Ensure the bsicons library is loaded)
+        showcase = tags$img(src = "B1.svg", width = "40px", height = "40px"), 
+        # showcase = bsicons::bs_icon("suitcase"), # Ensure the bsicons library is loaded)
         theme = value_box_theme(bg = "#373a3cff", fg = "#fafafa"),
         height = 200,
         style = "border-radius: 8px; overflow-y: auto;",
@@ -750,7 +759,7 @@ value_box(
     output$value_box6 <- renderUI({
       
       copy_ci_dist <- copy(as.data.table(data$ci_dist)[CI_Area == "B2"])
-      copy_ci_dist <- copy_ci_dist[Airline %in% unique(data$archivo1$`Departure Airline (IATA)`),]
+      copy_ci_dist <- copy_ci_dist[Airline %in% unique(data$archivo1$`AEROLINEA`),]
       copy_ci_dist[DOM_INT == "DOM", Airline := paste0(Airline," - Doméstico")]
       copy_ci_dist[DOM_INT == "INT", Airline := paste0(Airline," - Internacional")]
       
@@ -759,9 +768,11 @@ value_box(
       if(length(unique_values)==0){value <- paste("No hay aerolíneas", " asignadas")}
       
       value_box(
-        title = tags$div("Área B2", style = "font-size: 20px; font-weight: bold;margin-top: 10px;"),
+        # title = tags$div("Área B2", style = "font-size: 20px; font-weight: bold;margin-top: 10px;"),
+        title = NULL,
         value = HTML(paste0('<div style="font-size: 18px; height: 150px; overflow-y: auto;">', value, '</div>')),
-        showcase = bsicons::bs_icon("suitcase"), # Ensure the bsicons library is loaded)
+        showcase = tags$img(src = "B2.svg", width = "40px", height = "40px"), 
+        # showcase = bsicons::bs_icon("suitcase"), # Ensure the bsicons library is loaded)
         theme = value_box_theme(bg = "#373a3cff", fg = "#fafafa"),   
         height = 200,
         style = "border-radius: 8px; overflow-y: auto;",
@@ -771,7 +782,7 @@ value_box(
     output$value_box7 <- renderUI({
       
       copy_ci_dist <- copy(as.data.table(data$ci_dist)[CI_Area == "B3"])
-      copy_ci_dist <- copy_ci_dist[Airline %in% unique(data$archivo1$`Departure Airline (IATA)`),]
+      copy_ci_dist <- copy_ci_dist[Airline %in% unique(data$archivo1$`AEROLINEA`),]
       copy_ci_dist[DOM_INT == "DOM", Airline := paste0(Airline," - Doméstico")]
       copy_ci_dist[DOM_INT == "INT", Airline := paste0(Airline," - Internacional")]
       
@@ -780,9 +791,11 @@ value_box(
       if(length(unique_values)==0){value <- paste("No hay aerolíneas", " asignadas")}
       
       value_box(
-        title = tags$div("Área B3", style = "font-size: 20px; font-weight: bold;margin-top: 10px;"),
+        # title = tags$div("Área B3", style = "font-size: 20px; font-weight: bold;margin-top: 10px;"),
+        title = NULL,
         value = HTML(paste0('<div style="font-size: 18px; height: 150px; overflow-y: auto;">', value, '</div>')),
-        showcase = bsicons::bs_icon("suitcase"), # Ensure the bsicons library is loaded)
+        showcase = tags$img(src = "B3.svg", width = "40px", height = "40px"), 
+        # showcase = bsicons::bs_icon("suitcase"), # Ensure the bsicons library is loaded)
         theme = value_box_theme(bg = "#373a3cff", fg = "#fafafa"),   
         height = 200,
         style = "border-radius: 8px; overflow-y: auto;",
@@ -792,7 +805,7 @@ value_box(
     output$value_box8 <- renderUI({
       
       copy_ci_dist <- copy(as.data.table(data$ci_dist)[CI_Area == "C1"])
-      copy_ci_dist <- copy_ci_dist[Airline %in% unique(data$archivo1$`Departure Airline (IATA)`),]
+      copy_ci_dist <- copy_ci_dist[Airline %in% unique(data$archivo1$`AEROLINEA`),]
       copy_ci_dist[DOM_INT == "DOM", Airline := paste0(Airline," - Doméstico")]
       copy_ci_dist[DOM_INT == "INT", Airline := paste0(Airline," - Internacional")]
       
@@ -801,9 +814,11 @@ value_box(
       if(length(unique_values)==0){value <- paste("No hay aerolíneas", " asignadas")}
       
       value_box(
-        title = tags$div("Área C1", style = "font-size: 20px; font-weight: bold;margin-top: 10px;"),
+        # title = tags$div("Área C1", style = "font-size: 20px; font-weight: bold;margin-top: 10px;"),
+        title = NULL,
         value = HTML(paste0('<div style="font-size: 18px; height: 150px; overflow-y: auto;">', value, '</div>')),
-        showcase = bsicons::bs_icon("suitcase"), # Ensure the bsicons library is loaded)
+        showcase = tags$img(src = "C1.svg", width = "40px", height = "40px"), 
+        # showcase = bsicons::bs_icon("suitcase"), # Ensure the bsicons library is loaded)
         theme = value_box_theme(bg = "#373a3cff", fg = "#fafafa"),   
         height = 200,
         style = "border-radius: 8px; overflow-y: auto;",
@@ -813,7 +828,7 @@ value_box(
     output$value_box9 <- renderUI({
       
       copy_ci_dist <- copy(as.data.table(data$ci_dist)[CI_Area == "C2"])
-      copy_ci_dist <- copy_ci_dist[Airline %in% unique(data$archivo1$`Departure Airline (IATA)`),]
+      copy_ci_dist <- copy_ci_dist[Airline %in% unique(data$archivo1$`AEROLINEA`),]
       copy_ci_dist[DOM_INT == "DOM", Airline := paste0(Airline," - Doméstico")]
       copy_ci_dist[DOM_INT == "INT", Airline := paste0(Airline," - Internacional")]
       
@@ -822,9 +837,11 @@ value_box(
       if(length(unique_values)==0){value <- paste("No hay aerolíneas", " asignadas")}
       
       value_box(
-        title = tags$div("Área C2", style = "font-size: 20px; font-weight: bold;margin-top: 10px;"),
+        # title = tags$div("Área C2", style = "font-size: 20px; font-weight: bold;margin-top: 10px;"),
+        title = NULL,
         value = HTML(paste0('<div style="font-size: 18px; height: 150px; overflow-y: auto;">', value, '</div>')),
-        showcase = bsicons::bs_icon("suitcase"), # Ensure the bsicons library is loaded)
+        showcase = tags$img(src = "A1.svg", width = "40px", height = "40px"), 
+        # showcase = bsicons::bs_icon("suitcase"), # Ensure the bsicons library is loaded)
         theme = value_box_theme(bg = "#373a3cff", fg = "#fafafa"),   
         height = 200,
         style = "border-radius: 8px; overflow-y: auto;",
@@ -1581,14 +1598,12 @@ value_box(
     # Leer archivo 1: Plan de Vuelos
     if (!is.null(input$archivo1)) {
       data$archivo1 <- read_excel(input$archivo1$datapath)
-      data$verificacion_archivo1 <- verificar_columnas(data$archivo1, 6, "Plan de Vuelos")
+      data$verificacion_archivo1 <- verificar_columnas(data$archivo1, 8, "Plan de Vuelos")
       if (data$verificacion_archivo1$valido) {
         data$archivo1_mostrar <<- data$archivo1
-        data$archivo1_mostrar$Date <<- as.character(as.IDate(data$archivo1_mostrar$STD))
-        data$archivo1_mostrar$Departure <<- as.character(as.ITime(data$archivo1_mostrar$STD))
-        data$archivo1_mostrar$Departure <<- ifelse(substr(data$archivo1_mostrar$Departure, 1, 10) == "1899-12-31",
-                                                   sub("1899-12-31 ", "", data$archivo1_mostrar$Departure),
-                                                   data$archivo1_mostrar$Departure)
+        # data$archivo1_mostrar$Date <<- as.character(as.IDate(data$archivo1_mostrar$Date))
+        data$archivo1_mostrar$`Proyeccion PAX  Saliendo` <<- round(as.numeric(data$archivo1_mostrar$`Proyeccion PAX  Saliendo`), digits = 0)
+        
       }
       
       hojas_ddfs <- excel_sheets(input$archivo1$datapath)
@@ -1673,7 +1688,7 @@ value_box(
     if (!is.null(data$archivo1)) {
       tryCatch({
         # ARCHIVO 1
-        data$verificacion_archivo1 <- verificar_columnas(data$archivo1, 6, "Plan de Vuelos")
+        data$verificacion_archivo1 <- verificar_columnas(data$archivo1, 8, "Plan de Vuelos")
         output$message_archivo1 <- renderUI({
           tags$p(data$verificacion_archivo1$mensaje, style = ifelse(data$verificacion_archivo1$valido, "color: green;", "color: red;"))
         })
@@ -1856,6 +1871,7 @@ value_box(
     eds_limit <<- as.numeric(input$valor7)
     lost_track_value <<- as.numeric(input$valor8)
     no_pic <<- as.numeric(input$valor9)
+    apr_n2 <<- as.numeric(input$valor100)
     rec_n2 <<- as.numeric(input$valor10)
     mes_val <<- as.numeric(input$valor11)
     eds_lost <<- as.numeric(input$valor12)
@@ -1946,15 +1962,7 @@ value_box(
     # }
     
     ##### 3.6.3. DEVOLUCIÓN DE TABLAS DE MÁXIMA DEMANDA #####
-    
-    ## Bag Entry
-    output$table_bag_entry<- renderDT({
-      datatable(table_bag_entry, options = list(
-        pageLength = 5,
-        autoWidth = TRUE,
-        dom = 'trB',
-        buttons = c('copy', 'csv', 'excel', 'pdf', 'print'), extensions = 'Buttons'))
-    })
+
     
     output$tab_bag_entry <- renderDT({
       datatable(
@@ -1966,7 +1974,7 @@ value_box(
           initComplete = JS(                        # Añadir un poco de espacio sobre los botones con CSS
             "function(settings, json) {",
             "$('.dt-buttons').css({'display': 'flex', 'justify-content': 'center', 'margin-top': '20px'});",
-            "$('.dt-buttons button').css({'border-radius': '8px'});",
+            "$('.dt-buttons button').css({'border-radius': '8px', 'font-size': '10px', 'padding': '4px 8px', 'width': '18%', 'margin': '0 2px'});",
             "}"
           )
         ),
@@ -1974,15 +1982,7 @@ value_box(
       )
     })
     
-   
-    ## MES
-    output$table_mes<- renderDT({
-      datatable(table_mes[2:5,], options = list(
-        pageLength = 4,
-        autoWidth = TRUE,
-        dom = 'trB',
-        buttons = c('copy', 'csv', 'excel', 'pdf', 'print'), extensions = 'Buttons'))
-    })
+
     
     output$tab_mes<- renderDT({
       table_mes <- as.data.table(table_mes[2:5,])
@@ -1995,7 +1995,7 @@ value_box(
           initComplete = JS(                        # Añadir un poco de espacio sobre los botones con CSS
             "function(settings, json) {",
             "$('.dt-buttons').css({'display': 'flex', 'justify-content': 'center', 'margin-top': '20px'});",
-            "$('.dt-buttons button').css({'border-radius': '8px'});",
+            "$('.dt-buttons button').css({'border-radius': '8px', 'font-size': '10px', 'padding': '4px 8px', 'width': '18%', 'margin': '0 2px'});",
             "}"
           )
         ),
@@ -2003,15 +2003,7 @@ value_box(
       )
     })
     
-    ## MAKE-UP
-    output$table_makeup<- renderDT({
-      datatable(table_make_up, options = list(
-        pageLength = 5,
-        autoWidth = TRUE,
-        dom = 'trB',
-        buttons = c('copy', 'csv', 'excel', 'pdf', 'print'), extensions = 'Buttons'))
-    })
-    
+
     output$tab_makeup<- renderDT({
       table_make_up <- as.data.table(table_make_up)
       table_make_up <- rbind(table_make_up[2:7,],table_make_up[10:23,] )
@@ -2024,7 +2016,7 @@ value_box(
           initComplete = JS(                        # Añadir un poco de espacio sobre los botones con CSS
             "function(settings, json) {",
             "$('.dt-buttons').css({'display': 'flex', 'justify-content': 'center', 'margin-top': '20px'});",
-            "$('.dt-buttons button').css({'border-radius': '8px'});",
+            "$('.dt-buttons button').css({'border-radius': '8px', 'font-size': '10px', 'padding': '4px 8px', 'width': '18%', 'margin': '0 2px'});",
             "}"
           )
         ),
@@ -2033,14 +2025,7 @@ value_box(
       
     })
     
-    ## L3
-    output$table_L3<- renderDT({
-      datatable(table_L3, options = list(
-        pageLength = 5,
-        autoWidth = TRUE,
-        dom = 'trB',
-        buttons = c('copy', 'csv', 'excel', 'pdf', 'print'), extensions = 'Buttons'))
-    })
+
     
     output$tab_L3<- renderDT({
       datatable(
@@ -2052,22 +2037,14 @@ value_box(
           initComplete = JS(                        # Añadir un poco de espacio sobre los botones con CSS
             "function(settings, json) {",
             "$('.dt-buttons').css({'display': 'flex', 'justify-content': 'center', 'margin-top': '20px'});",
-            "$('.dt-buttons button').css({'border-radius': '8px'});",
+            "$('.dt-buttons button').css({'border-radius': '8px', 'font-size': '10px', 'padding': '4px 8px', 'width': '18%', 'margin': '0 2px'});",
             "}"
           )
         ),
         extensions = 'Buttons'                      # Extensión para los botones
       )
     })
-    
-    ## EDS
-    output$table_eds<- renderDT({
-      datatable(table_eds, options = list(
-        pageLength = 5,
-        autoWidth = TRUE,
-        dom = 'trB',
-        buttons = c('copy', 'csv', 'excel', 'pdf', 'print'), extensions = 'Buttons'))
-    })
+
     
     output$tab_eds<- renderDT({
       datatable(
@@ -2079,7 +2056,7 @@ value_box(
           initComplete = JS(                        # Añadir un poco de espacio sobre los botones con CSS
             "function(settings, json) {",
             "$('.dt-buttons').css({'display': 'flex', 'justify-content': 'center', 'margin-top': '20px'});",
-            "$('.dt-buttons button').css({'border-radius': '8px'});",
+            "$('.dt-buttons button').css({'border-radius': '8px', 'font-size': '10px', 'padding': '4px 8px', 'width': '18%', 'margin': '0 2px'});",
             "}"
           )
         ),
@@ -2087,15 +2064,7 @@ value_box(
       )
     })
     
-    ## SORTER
-    output$table_sorter<- renderDT({
-      datatable(table_sorter, options = list(
-        pageLength = 5,
-        autoWidth = TRUE,
-        dom = 'trB',
-        buttons = c('copy', 'csv', 'excel', 'pdf', 'print'), extensions = 'Buttons'))
-    })
-    
+
     output$tab_sorter<- renderDT({
       table_sorter <- as.data.table(table_sorter[2:3,])
       datatable(
@@ -2107,7 +2076,7 @@ value_box(
           initComplete = JS(                        # Añadir un poco de espacio sobre los botones con CSS
             "function(settings, json) {",
             "$('.dt-buttons').css({'display': 'flex', 'justify-content': 'center', 'margin-top': '20px'});",
-            "$('.dt-buttons button').css({'border-radius': '8px'});",
+            "$('.dt-buttons button').css({'border-radius': '8px', 'font-size': '10px', 'padding': '4px 8px', 'width': '18%', 'margin': '0 2px'});",
             "}"
           )
         ),
@@ -2115,15 +2084,7 @@ value_box(
       )
     })
     
-    
-    ## EBS
-    output$table_ebs<- renderDT({
-      datatable(table_ebs, options = list(
-        pageLength = 5,
-        autoWidth = TRUE,
-        dom = 'trB',
-        buttons = c('copy', 'csv', 'excel', 'pdf', 'print'), extensions = 'Buttons'))
-    })
+
     
     output$tab_ebs <- renderDT({
       datatable(
@@ -2135,7 +2096,7 @@ value_box(
           initComplete = JS(                        # Añadir un poco de espacio sobre los botones con CSS
             "function(settings, json) {",
             "$('.dt-buttons').css({'display': 'flex', 'justify-content': 'center', 'margin-top': '20px'});",
-            "$('.dt-buttons button').css({'border-radius': '8px'});",
+            "$('.dt-buttons button').css({'border-radius': '8px', 'font-size': '10px', 'padding': '4px 8px', 'width': '18%', 'margin': '0 2px'});",
             "}"
           )
         ),
@@ -2204,298 +2165,7 @@ value_box(
       })
     })
     
-    ##### 3.6.5. PLOTS OUTPUT SELECT #####
-    output$plots_bag_entry_ui <- renderUI({
-      switch(input$bag_entry_type,
-             
-             "Entrada de Equipaje Total" = tagList(
-               fluidRow(class = "plot-row", plotlyOutput("plot1", width = 1200)),
-             ),
-             
-             "Entrada de Equipaje Línea TR07" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot2", width = 1200)),
-               )
-             ),
-             "Entrada de Equipaje Línea TR08" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot3", width = 1200)),
-               )
-             ),
-             "Entrada de Equipaje Línea TR09" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot4", width = 1200)),
-               )
-             ),
-             "Entrada de Equipaje Línea TR10" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot5", width = 1200)),
-               )
-             ),
-             "Entrada de Equipaje Línea TR04" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot6", width = 1200)),
-               )
-             ),
-             "Entrada de Equipaje Línea TR03" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot7", width = 1200)),
-               )
-             ),
-             "Entrada de Equipaje Línea TR02" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot8", width = 1200)),
-               )
-             ),
-             "Entrada de Equipaje Línea TR01" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot9", width = 1200)),
-               )
-             ),
-             "Entrada de Equipaje TX01" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot10", width = 1200)),
-               )
-             ),
-             "Entrada de Equipaje TX02" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot11", width = 1200)),
-               )
-             ),
-             "Entrada de Equipaje TX03" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot12", width = 1200)),
-               )
-             ),
-             "Entrada de Equipaje TX04" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot13", width = 1200)),
-               )
-             ),
-      )# End switch bag entry
-      
-    })# End Render UI Bag Entry
-    
-    output$plots_make_up_ui <- renderUI({
-      switch(input$makeup_type,
-             
-             "Línea MU01-1xx" = tagList(
-               fluidRow(class = "plot-row",  plotlyOutput("plot30", width = 1200)),
-             ),
-             
-             "Línea MU01-2xx" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot31", width = 1200)),
-               )
-             ),
-             "Línea MU02-1xx" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot32", width = 1200)),
-               )
-             ),
-             "Línea MU02-2xx" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot33", width = 1200)),
-               )
-             ),
-             "Línea MU03-1xx" = tagList(
-               fluidRow(class = "plot-row",  plotlyOutput("plot34", width = 1200)),
-             ),
-             
-             "Línea MU03-2xx" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot35", width = 1200)),
-               )
-             ),
-             "Línea MU05-1xx" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot36", width = 1200)),
-               )
-             ),
-             "Línea MU05-2xx" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot37", width = 1200)),
-               )
-             ),
-             "Línea MU06-1xx" = tagList(
-               fluidRow(class = "plot-row",  plotlyOutput("plot38", width = 1200)),
-             ),
-             
-             "Línea MU06-2xx" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot39", width = 1200)),
-               )
-             ),
-             "Línea MU07-1xx" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot40", width = 1200)),
-               )
-             ),
-             "Línea MU07-2xx" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot41", width = 1200)),
-               )
-             ),
-             "Línea MU08-1xx" = tagList(
-               fluidRow(class = "plot-row",  plotlyOutput("plot42", width = 1200)),
-             ),
-             
-             "Línea MU08-2xx" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot43", width = 1200)),
-               )
-             ),
-             "Línea MU09-1xx" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot44", width = 1200)),
-               )
-             ),
-             "Línea MU09-2xx" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot45", width = 1200)),
-               )
-             ),
-             "Línea MU10-1xx" = tagList(
-               fluidRow(class = "plot-row",  plotlyOutput("plot46", width = 1200)),
-             ),
-             
-             "Línea MU10-2xx" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot47", width = 1200)),
-               )
-             ),
-             "Línea MU11-1xx" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size",  plotlyOutput("plot48", width = 1200)),
-               )
-             ),
-             "Línea MU11-2xx" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot49", width = 1200)),
-               )
-             ),
-      )# End switch bag entry
-      
-    })# End Render UI Bag Entry
-    
-    output$plots_nivel3_ui <- renderUI({
-      switch(input$nivel3_type,
-             
-             
-             "Demanda y Operadores Nivel 3" = tagList(
-               fluidRow(class = "plot-row",
-                        column(6, div(class = "dynamic-size", plotlyOutput("plot19", width = 800))),
-                        column(6, div(class = "dynamic-size", plotlyOutput("plot_op1", width = 800))) #PLOT PARA EL OPERADOR
-               ),
-             )
-      ) #End switch Nivel 3
-    }) #End Render UI Nivel 3
-    
-    output$plots_mes_ui <- renderUI({
-      switch(input$mes_type,
-             "Total" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot14", width = 1200)),
-               )
-             ),
-             "ME1" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot15", width = 1200)),
-               )
-             ),
-             "ME2" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot16", width = 1200)),
-               )
-             ),
-             "ME3" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot17", width = 1200)),
-               )
-             ),
-             "ME4" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot18", width = 1200)),
-               )
-             ),
-      ) #End switch MES
-    }) #End Render UI MES
-    
-    output$plots_sorter_ui <- renderUI({
-      switch(input$loop_type,
-             "Sorter MS01" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot28", width = 1200)),
-               )
-             ),
-             "Sorter MS02" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot29", width = 1200)),
-               )
-             ),
-      ) #End switch Sorter
-    }) #End Render UI Sorter
-    
-    output$plots_eds_ui <- renderUI({
-      switch(input$eds_type,
-             "Demanda y Operadores de nivel 2 Total" = tagList(
-               fluidRow(class = "plot-row",
-                        column(6, div(class = "dynamic-size", plotlyOutput("plot20", width = 800))),
-                        column(6, div(class = "dynamic-size", plotlyOutput("plot_op2", width = 800)))
-               )
-             ),
-             "Línea 1L1" = tagList(
-               fluidRow(class = "plot-row",
-                        column(12, div(class = "dynamic-size", plotlyOutput("plot21", width = 1200))),
-               )
-             ),
-             "Línea 1L2" = tagList(
-               fluidRow(class = "plot-row",
-                        column(12, div(class = "dynamic-size", plotlyOutput("plot22", width = 1200)))
-               )
-             ),
-             "Línea 1L3" = tagList(
-               fluidRow(class = "plot-row",
-                        column(12, div(class = "dynamic-size", plotlyOutput("plot23", width = 1200)))
-               )
-             ),
-             "Línea 1L4" = tagList(
-               fluidRow(class = "plot-row",
-                        column(12, div(class = "dynamic-size", plotlyOutput("plot24", width = 1200)))
-               )
-             ),
-             "Línea 1L5" = tagList(
-               fluidRow(class = "plot-row",
-                        column(12, div(class = "dynamic-size", plotlyOutput("plot25", width = 1200)))
-               )
-             ),
-             "Línea 1L6" = tagList(
-               fluidRow(class = "plot-row",
-                        column(12, div(class = "dynamic-size", plotlyOutput("plot26", width = 1200)))
-               )
-             ),
-             "Línea 1L7" = tagList(
-               fluidRow(class = "plot-row",
-                        column(12, div(class = "dynamic-size", plotlyOutput("plot27", width = 1200)))
-               )
-             ),
-      ) #End switch EDS
-    }) #End Render UI EDS
-    
-    output$plots_ebs_ui <- renderUI({
-      switch(input$ebs_type,
-             "EBS Automático" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot50", width = 1200)),
-               )
-             ),
-             "EBS Manual" = tagList(
-               fluidRow(class = "plot-row",
-                        div(class = "dynamic-size", plotlyOutput("plot51", width = 1200)),
-               )
-             ),
-      ) #End switch EBS
-    }) #End Render UI EBS
+   
     output$loading_message2 <- renderUI({tags$p("Ejecución completa", style = "color: green;")})
     
     output$download_result_bag_entry <- downloadHandler(

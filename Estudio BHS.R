@@ -151,7 +151,7 @@ setnames(emptytable, colnames(emptytable),as.character(date_colnames))
 
 ddfs_departures_LATAM_AVIANCA <- copy(ddfs_complete)   # We copy the original DDFS
 
-ddfs_departures_LATAM_AVIANCA <- ddfs_departures_LATAM_AVIANCA[Airline == "LA" | Airline == "AV"]
+ddfs_departures_LATAM_AVIANCA <- ddfs_departures_LATAM_AVIANCA[Airline == "Latam" | Airline == "Avianca"]
 
 ##### 4.1 DOM #####
 ddfs_departures_LATAM_AVIANCA_OD_DOM <- copy(ddfs_departures_LATAM_AVIANCA[DOM_INT == "DOM"])
@@ -181,7 +181,7 @@ ddfs_departures_LATAM_AVIANCA_OD_showup <- rbind(ddfs_departures_LATAM_AVIANCA_O
 #### 5. SHOW-UP OD NO LATAM & AVIANCA ####
 
 ddfs_departures_rest <- copy(ddfs_complete)   # We copy the original DDFS
-ddfs_departures_rest <- ddfs_departures_rest[Airline != "LA" & Airline != "AV"]
+ddfs_departures_rest <- ddfs_departures_rest[Airline != "Latam" & Airline != "Avianca"]
 
 ##### 5.1 DOM #####
 ddfs_departures_rest_OD_DOM <- copy(ddfs_departures_rest[DOM_INT == "DOM"])
@@ -245,9 +245,9 @@ ddfs_departures_transf_showup <- rbind(ddfs_departures_transf_showup, ddfs_depar
 ddfs_departures_transf_showup[, OD_Transf := "Transf"]
 
 # TX line for Transf
-ddfs_departures_transf_showup[Airline != "AV" & Airline != "LA", CI_Area := "TX04"]
-ddfs_departures_transf_showup[Airline == "LA", CI_Area := "TX01"]
-ddfs_departures_transf_showup[Airline == "AV", CI_Area := rep(c("TX02", "TX03"), length.out = .N)]
+ddfs_departures_transf_showup[Airline != "Avianca" & Airline != "Latam", CI_Area := "TX04"]
+ddfs_departures_transf_showup[Airline == "Latam", CI_Area := "TX01"]
+ddfs_departures_transf_showup[Airline == "Avianca", CI_Area := rep(c("TX02", "TX03"), length.out = .N)]
 
 
 #### 8. BAGLIST OD ####
@@ -583,7 +583,9 @@ result_aux_makeup[is.na(N), N :=0]
 
 result_makeup<- dcast(result_aux_makeup, Carousel_Entry_Time ~ makeup_aux, value.var = "N", fun.aggregate = sum, fill = 0)
 
-columnas_a_verificar <- c(paste0("MU0",carousel_list,"_1"),paste0("MU0",carousel_list,"_2"))
+carousel_list_2 <- c(1,2,3,5,6,7,8,9,10,11)
+
+columnas_a_verificar <- c(paste0("MU0",carousel_list_2,"_1"),paste0("MU0",carousel_list_2,"_2"))
 
 lapply(columnas_a_verificar, function(col) {
   
@@ -687,15 +689,14 @@ for(i in 2:length(result_eds)){
 ##### 13.5 LOOP #####
 setnames(result_loop, c(1), "hour")
 rh_loop <- data.table(hour = copy(result_loop$hour))
-# recirc <- as.numeric(parameters[PARAMETER == "Recirc"]$VALUE)/100 + 1
-recirc <- recirc/100 + 1
+recirc2 <- recirc/100 + 1
 for(i in 2:length(result_loop)){
   aux_rh <- copy(result_loop[, .SD, .SDcols = c(1, i)])
   aux_colnames <- colnames(aux_rh)
   colname_2 <- aux_colnames[2]
   setnames(aux_rh,c(2),c("pax"))
   aux_rh_2 <- function_rollinghour(aux_rh)
-  aux_rh_2[, rolling_hour := ceiling(rolling_hour*recirc)]
+  aux_rh_2[, rolling_hour := ceiling(rolling_hour*recirc2)]
   setnames(aux_rh_2, c("rolling_hour"), c(colname_2))
   rh_loop <- cbind(rh_loop, aux_rh_2[, c(3)])
 }
