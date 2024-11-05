@@ -840,7 +840,7 @@ value_box(
         # title = tags$div("Área C2", style = "font-size: 20px; font-weight: bold;margin-top: 10px;"),
         title = NULL,
         value = HTML(paste0('<div style="font-size: 18px; height: 150px; overflow-y: auto;">', value, '</div>')),
-        showcase = tags$img(src = "A1.svg", width = "40px", height = "40px"), 
+        showcase = tags$img(src = "C2.svg", width = "40px", height = "40px"), 
         # showcase = bsicons::bs_icon("suitcase"), # Ensure the bsicons library is loaded)
         theme = value_box_theme(bg = "#373a3cff", fg = "#fafafa"),   
         height = 200,
