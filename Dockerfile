@@ -12,3 +12,4 @@ RUN R -e "renv::restore()"
 EXPOSE 3838
 
 CMD ["R", "-e", "shiny::runApp('./app.R', host='0.0.0.0', port=3838)"]
+#archivo del dockerfile
